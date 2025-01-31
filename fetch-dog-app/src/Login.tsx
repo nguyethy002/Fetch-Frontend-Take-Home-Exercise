@@ -22,7 +22,7 @@ const Login = ({ onLogin }: { onLogin: () => void }) => {
 
     return (
         <Container>
-            <Typography variant="h4">Login</Typography>
+            <Typography variant="h4" color="black">Login</Typography>
             <TextField
                 label="Name"
                 variant="outlined"
