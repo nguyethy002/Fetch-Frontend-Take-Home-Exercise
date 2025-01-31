@@ -54,16 +54,10 @@ npm run dev
 
 Then, open your browser and visit `http://localhost:3000` to view the application.
 
-### 4. Environment Variables
 
-Make sure you set up the following environment variables for local development:
+## Access the App
 
-- `VITE_API_URL`: The base URL for Fetch API (e.g., `https://frontend-take-home-service.fetch.com`).
-- `VITE_FIREBASE_API_KEY`: Your Firebase API key for authentication (if applicable).
-
-### 5. Deployment
-
-Once you’ve tested your app locally, you can deploy it to a platform like [Vercel](https://vercel.com/) or [Netlify](https://www.netlify.com/). Ensure that the app is accessible on the internet.
+You can access the app directly using this link: [https://fetch--take-home-exercise.web.app/](https://fetch--take-home-exercise.web.app/).
 
 ---
 
@@ -98,3 +92,5 @@ The app communicates with Fetch's API to retrieve shelter dog data. Below are th
 - **Firebase**: For authentication and storing data (if applicable).
 - **Axios**: For API calls.
 - **CSS/Styled-components**: For styling the application.
+
+
