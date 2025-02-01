@@ -1,17 +1,14 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 import {
-    Container, Grid, Button, Select, MenuItem, InputLabel, FormControl, Card, CardContent, Typography, CircularProgress
+    Container, Button, Select, MenuItem, InputLabel, FormControl, Card, CardContent, Typography, CircularProgress, Grid
 } from '@mui/material';
+import { DogCard } from './DogCard';
+import { Dog } from './types/types';
 
-interface Dog {
-    id: string;
-    img: string;
-    name: string;
-    age: number;
-    zip_code: string;
-    breed: string;
-}
+// API Base URL
+const API_BASE_URL = 'https://frontend-take-home-service.fetch.com/dogs';
+const AUTH_API_URL = 'https://frontend-take-home-service.fetch.com/auth/logout';
 
 const DogSearch = () => {
     const [dogs, setDogs] = useState<Dog[]>([]);
@@ -20,92 +17,104 @@ const DogSearch = () => {
     const [selectedBreed, setSelectedBreed] = useState<string>('');
     const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
     const [page, setPage] = useState<number>(0);
-    const [loading, setLoading] = useState<boolean>(false); // Loading state
+    const [loading, setLoading] = useState<boolean>(false);
     const pageSize = 25;
 
-    // Fetch breeds and dog details
-    const fetchBreeds = useCallback(async () => {
-        try {
-            setLoading(true); // Set loading to true when starting the fetch
-            const { data } = await axios.get('https://frontend-take-home-service.fetch.com/dogs/breeds', {
-                withCredentials: true,
-            });
-            setBreeds(data);
-        } catch (error) {
-            console.error('Error fetching breeds:', error);
-        } finally {
-            setLoading(false); // Set loading to false when fetch is done
-        }
+    // Fetch breeds on mount
+    useEffect(() => {
+        const fetchBreeds = async () => {
+            try {
+                setLoading(true);
+                const { data } = await axios.get(`${API_BASE_URL}/breeds`, { withCredentials: true });
+                setBreeds(data);
+            } catch (error) {
+                console.error('Error fetching breeds:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchBreeds();
     }, []);
 
-    const fetchDogs = useCallback(async () => {
-        try {
-            setLoading(true); // Set loading to true when starting the fetch
-            const { data: searchData } = await axios.get('https://frontend-take-home-service.fetch.com/dogs/search', {
-                params: {
-                    breeds: selectedBreed ? [selectedBreed] : [],
-                    sort: `breed:${sortOrder}`,
-                    size: pageSize,
-                    from: page * pageSize,
-                },
-                withCredentials: true,
-            });
-
-            if (Array.isArray(searchData.resultIds)) {
-                const { data: dogsData } = await axios.post('https://frontend-take-home-service.fetch.com/dogs', searchData.resultIds, {
+    // Fetch dogs when filters change
+    useEffect(() => {
+        const fetchDogs = async () => {
+            try {
+                setLoading(true);
+                const { data: searchData } = await axios.get(`${API_BASE_URL}/search`, {
+                    params: {
+                        breeds: selectedBreed ? [selectedBreed] : [],
+                        sort: `breed:${sortOrder}`,
+                        size: pageSize,
+                        from: page * pageSize,
+                    },
                     withCredentials: true,
                 });
-                setDogs(Array.isArray(dogsData) ? dogsData : []);
-            } else {
+
+                if (Array.isArray(searchData.resultIds)) {
+                    const { data: dogsData } = await axios.post(`${API_BASE_URL}`, searchData.resultIds, {
+                        withCredentials: true,
+                    });
+                    setDogs(Array.isArray(dogsData) ? dogsData : []);
+                } else {
+                    setDogs([]);
+                }
+            } catch (error) {
+                console.error('Error fetching dogs:', error);
                 setDogs([]);
+            } finally {
+                setLoading(false);
             }
-        } catch (error) {
-            console.error('Error fetching dogs:', error);
-            setDogs([]);
-        } finally {
-            setLoading(false); // Set loading to false when fetch is done
-        }
+        };
+
+        fetchDogs();
     }, [selectedBreed, sortOrder, page]);
 
-    useEffect(() => {
-        fetchBreeds();
-    }, [fetchBreeds]);
-
-    useEffect(() => {
-        fetchDogs();
-    }, [fetchDogs]);
-
-    const handleFavorite = useCallback((dogId: string) => {
-        setFavorites(prev =>
-            prev.includes(dogId) ? prev.filter(id => id !== dogId) : [...prev, dogId]
+    // Toggle favorites
+    const handleFavorite = (dogId: string) => {
+        setFavorites((prev) =>
+            prev.includes(dogId) ? prev.filter((id) => id !== dogId) : [...prev, dogId]
         );
-    }, []);
+    };
 
-    const generateMatch = useCallback(async () => {
+    // Generate match
+    const generateMatch = async () => {
         if (favorites.length === 0) {
             alert("Please select at least one favorite dog before matching.");
             return;
         }
 
         try {
-            const { data } = await axios.post(
-                'https://frontend-take-home-service.fetch.com/dogs/match',
-                favorites, 
-                { withCredentials: true }
-            );
+            const { data } = await axios.post(`${API_BASE_URL}/match`, favorites, { withCredentials: true });
             alert(`Matched with dog ID: ${data.match}`);
         } catch (error) {
             console.error('Error generating match', error);
             alert('Failed to generate match. Please try again.');
         }
-    }, [favorites]);
+    };
+
+    // Logout function
+    const handleLogout = async () => {
+        try {
+            await axios.post(AUTH_API_URL, {}, { withCredentials: true });
+            alert("Logged out successfully!");
+            window.location.reload();
+        } catch (error) {
+            console.error('Error logging out:', error);
+            alert('Failed to log out. Please try again.');
+        }
+    };
 
     return (
         <Container>
-            {loading ? ( // Show loading spinner if data is loading
+            <Button variant="contained" color="secondary" onClick={handleLogout} style={{ marginBottom: '1rem', marginLeft: 'auto', display: 'block' }}>
+                Logout
+            </Button>
+            {loading ? (
                 <CircularProgress size={50} style={{ display: 'block', margin: 'auto', marginTop: '20px' }} />
             ) : (
                 <>
+                    {/* Filters */}
                     <Grid container spacing={3}>
                         <Grid item xs={12} sm={6}>
                             <FormControl fullWidth>
@@ -128,69 +137,32 @@ const DogSearch = () => {
                         </Grid>
                     </Grid>
 
+                    {/* Dog List */}
                     <Grid container spacing={3} style={{ marginTop: '2rem' }}>
                         {dogs.map((dog) => (
-                            <Grid item xs={12} sm={4} key={dog.id}>
-                                <Card elevation={3} style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-                                    <img 
-                                        src={dog.img} 
-                                        alt={dog.name} 
-                                        style={{ width: '100%', height: '200px', objectFit: 'cover', borderRadius: '8px 8px 0 0' }} 
-                                    />
-                                    <CardContent style={{ display: 'flex', flexDirection: 'column', flexGrow: 1 }}>
-                                        <Typography variant="h6" style={{ fontWeight: 'bold', marginBottom: '8px' }}>{dog.name}</Typography>
-                                        <Typography variant="body2" color="textSecondary">Age: {dog.age}</Typography>
-                                        <Typography variant="body2" color="textSecondary">Breed: {dog.breed}</Typography>
-                                        <Typography variant="body2" color="textSecondary">Location: {dog.zip_code}</Typography>
-                                        <Button 
-                                            variant="outlined" 
-                                            color={favorites.includes(dog.id) ? 'secondary' : 'primary'} 
-                                            onClick={() => handleFavorite(dog.id)} 
-                                            fullWidth
-                                            style={{ marginTop: 'auto' }}
-                                        >
-                                            {favorites.includes(dog.id) ? 'Remove from Favorites' : 'Add to Favorites'}
-                                        </Button>
-                                    </CardContent>
-                                </Card>
-                            </Grid>
+                            <DogCard key={dog.id} dog={dog} isFavorite={favorites.includes(dog.id)} onFavorite={handleFavorite} />
                         ))}
                     </Grid>
 
+                    {/* Pagination */}
                     <Grid container justifyContent="center" spacing={2} style={{ marginTop: '2rem' }}>
                         <Grid item>
-                            <Button 
-                                variant="contained" 
-                                color="primary" 
-                                disabled={page === 0} 
-                                onClick={() => setPage(prev => Math.max(prev - 1, 0))} 
-                                style={{ padding: '10px 20px' }}
-                            >
+                            <Button variant="contained" color="primary" disabled={page === 0} onClick={() => setPage(page - 1)}>
                                 Previous
                             </Button>
                         </Grid>
                         <Grid item>
-                            <Typography variant="body1" color ="black">Page {page + 1}</Typography>
+                            <Typography variant="body1" color="black">Page {page + 1}</Typography>
                         </Grid>
                         <Grid item>
-                            <Button 
-                                variant="contained" 
-                                color="primary" 
-                                onClick={() => setPage(prev => prev + 1)} 
-                                style={{ padding: '10px 20px' }}
-                            >
+                            <Button variant="contained" color="primary" onClick={() => setPage(page + 1)}>
                                 Next
                             </Button>
                         </Grid>
                     </Grid>
 
-                    <Button 
-                        variant="contained" 
-                        color="secondary" 
-                        onClick={generateMatch} 
-                        fullWidth 
-                        style={{ marginTop: '2rem', padding: '10px' }}
-                    >
+                    {/* Match Button */}
+                    <Button variant="contained" color="secondary" onClick={generateMatch} fullWidth style={{ marginTop: '2rem', padding: '10px' }}>
                         Generate Match
                     </Button>
                 </>
