@@ -32,8 +32,8 @@ Follow these steps to set up the project locally:
 Start by cloning the repository:
 
 ```bash
-git clone <repo_url>
-cd <repo_directory>
+git clone https://github.com/nguyethy002/Fetch-Frontend-Take-Home-Exercise.git
+cd fetch-dog-app
 ```
 
 ### 2. Install Dependencies
