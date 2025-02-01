@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import {
-    Container, Button, Select, MenuItem, InputLabel, FormControl, Card, CardContent, Typography, CircularProgress, Grid
+    Container, Button, Select, MenuItem, InputLabel, FormControl, Typography, CircularProgress, Grid
 } from '@mui/material';
 import { DogCard } from './DogCard';
 import { Dog } from './types/types';
