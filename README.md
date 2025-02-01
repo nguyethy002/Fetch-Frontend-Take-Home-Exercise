@@ -5,7 +5,7 @@ Welcome to the Fetch Frontend Take-Home Exercise! This project helps dog lovers 
 
 ## Overview
 
-In this project, you will:
+In this project, I will:
 
 - Build a website that allows users to log in with their name and email.
 - Fetch and display shelter dogs using an API.
@@ -52,7 +52,7 @@ To run the development server locally:
 npm run dev
 ```
 
-Then, open your browser and visit `http://localhost:3000` to view the application.
+Then, open your browser and visit `http://localhost:5173/` to view the application.
 
 
 ## Access the App
@@ -92,5 +92,8 @@ The app communicates with Fetch's API to retrieve shelter dog data. Below are th
 - **Firebase**: For authentication and storing data (if applicable).
 - **Axios**: For API calls.
 - **CSS/Styled-components**: For styling the application.
+
+## Accessibility
+- The application is reponsive for all of the media ( for example desktop, tablet and mobile)
 
 
