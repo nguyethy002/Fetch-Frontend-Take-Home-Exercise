@@ -80,7 +80,6 @@ The app communicates with Fetch's API to retrieve shelter dog data. Below are th
 ### Locations
 
 - **POST /locations**: Fetch location data based on zip codes.
-- **POST /locations/search**: Search for locations by city, state, or geographic coordinates.
 
 ---
 
