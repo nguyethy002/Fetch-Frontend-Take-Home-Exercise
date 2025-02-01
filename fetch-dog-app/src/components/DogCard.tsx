@@ -1,7 +1,7 @@
 import {
     Button, Card, CardContent, Typography, Grid
 } from '@mui/material';
-import { Dog } from './types/types';
+import { Dog } from '../types/types';
 export const DogCard = ({ dog, isFavorite, onFavorite }: { dog: Dog; isFavorite: boolean; onFavorite: (id: string) => void }) => (
     <Grid item xs={12} sm={4}>
         <Card elevation={3} style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>

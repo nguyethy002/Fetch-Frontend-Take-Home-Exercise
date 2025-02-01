@@ -30,6 +30,7 @@
     "@types/mocha": "^10.0.10",
     "@types/react": "^18.3.18",
     "@types/react-dom": "^18.3.5",
+    "@types/testing-library__react-hooks": "^3.4.1",
     "@vitejs/plugin-react": "^4.3.4",
     "axios-mock-adapter": "^2.1.0",
     "babel-jest": "^29.7.0",

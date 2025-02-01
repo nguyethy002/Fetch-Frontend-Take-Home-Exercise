@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Login from './Login';
-import DogSearch from './DogSearch';
+import DogSearch from './components/DogSearch';
 import './App.css';
 
 const App = () => {

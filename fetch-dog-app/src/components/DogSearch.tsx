@@ -4,7 +4,7 @@ import {
     Container, Button, Select, MenuItem, InputLabel, FormControl, Typography, CircularProgress, Grid
 } from '@mui/material';
 import { DogCard } from './DogCard';
-import { Dog } from './types/types';
+import { Dog } from '../types/types';
 
 // API Base URL
 const API_BASE_URL = 'https://frontend-take-home-service.fetch.com/dogs';
